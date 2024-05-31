@@ -43,7 +43,7 @@ const Usuario = sequelize.define(
   }
 );
 
-// Sincronizar el modelo con la base de datos
+// // Sincronizar el modelo con la base de datos
 Usuario.sync({ force: false }) // 'force: false' para no sobrescribir la tabla existente
   .then(() => console.log('Modelo de usuarios sincronizado con éxito'))
   .catch((error) => console.error('Error al sincronizar el modelo de usuarios:', error));
