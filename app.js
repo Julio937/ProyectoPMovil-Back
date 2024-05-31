@@ -7,7 +7,7 @@ app.use(express.json());
 // Rutas Usuario
 app.get('/usuarios', usuarioController.obtenerUsuarios);
 app.post('/usuarios', usuarioController.crearUsuario);
-app.post('/usuarios/:usuario_id/acciones/:accion_id', usuarioController.asociarAccionAUsuario);
+app.post('/usuarios/acciones', usuarioController.asociarAccionAUsuario);
 app.put('/usuarios/:id', usuarioController.actualizarUsuario);
 app.delete('/usuarios/:id', usuarioController.eliminarUsuario);
 
