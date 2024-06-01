@@ -2,6 +2,7 @@ const express = require('express');
 const usuarioController = require('./controllers/usuarioController');
 const paisController = require('./controllers/paisController');
 const accionController = require('./controllers/accionController');
+const gestoraController = require('./controllers/gestoraController');
 
 const app = express();
 
@@ -28,6 +29,14 @@ app.get('/acciones/:id', accionController.obtenerAccionPorId);
 app.post('/acciones', accionController.crearAccion);
 app.put('/acciones/:id', accionController.actualizarAccion);
 app.delete('/acciones/:id', accionController.eliminarAccion);
+
+// Rutas Gestora
+app.get('/gestoras', gestoraController.obtenerGestoras);
+app.get('/gestoras/:id', gestoraController.obtenerGestoraPorId);
+app.post('/gestoras', gestoraController.crearGestora);
+app.put('/gestoras/:id', gestoraController.actualizarGestora);
+app.delete('/gestoras/:id', gestoraController.eliminarGestora);
+app.get('/gestoras/pais/:pais_id', gestoraController.obtenerGestorasPorPais);
 
 app.listen(3000, () => {
   console.log('Servidor ejecutándose en http://localhost:3000');
