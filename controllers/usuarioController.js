@@ -100,12 +100,13 @@ exports.actualizarUsuario = async (req, res) => {
       return res.status(404).send('Usuario no encontrado');
     }
 
-    usuario.nombre = nombre;
-    usuario.apellido = apellido;
-    usuario.correo = correo;
-    usuario.contraseña = contraseña;
-    usuario.cedula = cedula;
-    usuario.pais_id = pais_id;
+    // Actualizar solo los campos que se han proporcionado en el body
+    usuario.nombre = nombre ?? usuario.nombre;
+    usuario.apellido = apellido ?? usuario.apellido;
+    usuario.correo = correo ?? usuario.correo;
+    usuario.contraseña = contraseña ?? usuario.contraseña;
+    usuario.cedula = cedula ?? usuario.cedula;
+    usuario.pais_id = pais_id ?? usuario.pais_id;
 
     await usuario.save();
     res.status(200).json(usuario);
