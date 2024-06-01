@@ -39,6 +39,43 @@ exports.obtenerUsuarios = async (req, res) => {
   }
 };
 
+exports.obtenerUsuarioPorId = async (req, res) => {
+  try {
+    const usuario = await Usuario.findByPk(req.params.id);
+
+    if (!usuario) {
+      return res.status(404).send('Usuario no encontrado');
+    }
+
+    // Buscar las asociaciones de UsuarioAccion para el usuario actual
+    const usuarioAcciones = await UsuarioAccion.findAll({
+      where: { usuario_id: usuario.id },
+    });
+
+    // Para cada asociación, buscar la acción correspondiente
+    const acciones = await Promise.all(
+      usuarioAcciones.map(async (ua) => {
+        const accion = await Accion.findByPk(ua.accion_id);
+        return accion ? { nombre: accion.nombre, valor_dolares: accion.valor_dolares } : null;
+      })
+    );
+
+    // Filtrar las acciones para eliminar los valores nulos
+    const accionesFiltradas = acciones.filter((a) => a != null);
+
+    // Agregar las acciones al objeto del usuario
+    const usuarioConAcciones = {
+      ...usuario.toJSON(),
+      acciones: accionesFiltradas.length > 0 ? accionesFiltradas : ['N/A'],
+    };
+
+    res.json(usuarioConAcciones);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener el usuario');
+  }
+};
+
 // Crear un nuevo usuario
 exports.crearUsuario = async (req, res) => {
   try {
