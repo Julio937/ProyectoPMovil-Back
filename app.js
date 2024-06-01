@@ -3,6 +3,9 @@ const usuarioController = require('./controllers/usuarioController');
 const paisController = require('./controllers/paisController');
 const accionController = require('./controllers/accionController');
 const gestoraController = require('./controllers/gestoraController');
+const authController = require('./controllers/autenticationController');
+const monedaController = require('./controllers/monedaController');
+const transaccionController = require('./controllers/transaccionesController');
 
 const app = express();
 
@@ -38,6 +41,24 @@ app.post('/gestoras', gestoraController.crearGestora);
 app.put('/gestoras/:id', gestoraController.actualizarGestora);
 app.delete('/gestoras/:id', gestoraController.eliminarGestora);
 app.get('/gestoras/pais/:pais_id', gestoraController.obtenerGestorasPorPais);
+
+// Rutas de autenticación
+app.post('/auth/registrar', authController.registrarUsuario);
+app.post('/auth/iniciar-sesion', authController.iniciarSesion);
+
+// Ruta Moneda
+app.get('/moneda', monedaController.obtenerMonedas);
+app.get('/moneda/:id', monedaController.obtenerMonedaPorId);
+app.post('/moneda', monedaController.crearMoneda);
+app.put('/moneda/:id', monedaController.actualizarMoneda);
+app.delete('/moneda/:id', monedaController.eliminarMoneda);
+
+// Ruta de transacciones
+app.get('/transaccion', transaccionController.obtenerTransacciones);
+app.get('/transaccion/:id', transaccionController.obtenerTransaccionPorId);
+app.post('/transaccion', transaccionController.crearTransaccion);
+app.put('/transaccion/:id', transaccionController.actualizarTransaccion);
+app.delete('/transaccion/:id', transaccionController.eliminarTransaccion);
 
 app.listen(3000, () => {
   console.log('Servidor ejecutándose en http://localhost:3000');
