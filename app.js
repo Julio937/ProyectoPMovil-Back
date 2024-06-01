@@ -15,6 +15,7 @@ app.post('/usuarios', usuarioController.crearUsuario);
 app.post('/usuarios/acciones', usuarioController.asociarAccionAUsuario);
 app.put('/usuarios/:id', usuarioController.actualizarUsuario);
 app.delete('/usuarios/:id', usuarioController.eliminarUsuario);
+app.delete('/usuarios/acciones/desasociar', usuarioController.desasociarAccionDeUsuario);
 
 // Rutas País
 app.get('/paises', paisController.obtenerPaises);

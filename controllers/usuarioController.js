@@ -126,6 +126,29 @@ exports.asociarAccionAUsuario = async (req, res) => {
   }
 };
 
+// Desasociar una acción a un usuario
+exports.desasociarAccionDeUsuario = async (req, res) => {
+  try {
+    const { usuario_id, accion_id } = req.body;
+    const usuarioAccion = await UsuarioAccion.findOne({
+      where: {
+        usuario_id: usuario_id,
+        accion_id: accion_id,
+      },
+    });
+
+    if (!usuarioAccion) {
+      return res.status(404).send('La asociación entre el usuario y la acción no existe');
+    }
+
+    await usuarioAccion.destroy();
+    res.status(200).send('Acción desasociada del usuario con éxito');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al desasociar la acción del usuario');
+  }
+};
+
 // Actualizar un usuario existente
 exports.actualizarUsuario = async (req, res) => {
   try {
