@@ -2,6 +2,7 @@ const Usuario = require('../models/usuario');
 const Pais = require('../models/pais');
 const Accion = require('../models/accion');
 const UsuarioAccion = require('../models/usuarioAccion');
+const Transaccion = require('../models/transaccion');
 
 // Obtener todos los usuarios con sus acciones asociadas
 exports.obtenerUsuarios = async (req, res) => {
@@ -76,17 +77,74 @@ exports.obtenerUsuarioPorId = async (req, res) => {
   }
 };
 
+exports.obtenerBalanceUsuario = async (req, res) => {
+  try {
+    const { usuario_id } = req.params;
+    let balanceTotal = 0;
+
+    // Obtener todas las acciones del usuario
+    const accionesUsuario = await UsuarioAccion.findAll({
+      where: { usuario_id },
+    });
+
+    // Calcular el balance total
+    for (const ua of accionesUsuario) {
+      const accion = await Accion.findByPk(ua.accion_id);
+      balanceTotal += ua.cantidad * accion.valor_dolares;
+    }
+
+    res.json({ balance: balanceTotal });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener el balance del usuario');
+  }
+};
+
+exports.obtenerGananciasUsuario = async (req, res) => {
+  try {
+    const { usuario_id } = req.params;
+    let gananciasTotales = 0;
+
+    // Obtener todas las transacciones de compra del usuario
+    const transacciones = await Transaccion.findAll({
+      where: { usuario_id, tipo: 'compra' },
+    });
+
+    // Calcular las ganancias para cada transacción
+    for (const transaccion of transacciones) {
+      const accion = await Accion.findByPk(transaccion.accion_id);
+      gananciasTotales += (accion.valor_dolares - transaccion.precio_unitario) * transaccion.cantidad;
+    }
+
+    res.json({ earnings: gananciasTotales });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener las ganancias del usuario');
+  }
+};
+
 // Crear un nuevo usuario
 exports.crearUsuario = async (req, res) => {
   try {
     const { nombre, apellido, correo, contraseña, cedula, pais_id } = req.body;
+
+    // Verificar si el correo ya está en uso
+    const usuarioExistente = await Usuario.findOne({ where: { correo } });
+    if (usuarioExistente) {
+      return res.status(400).send('El correo ya está en uso');
+    }
+
+    // Verificar si el país existe
     const pais = await Pais.findByPk(pais_id);
     if (!pais) {
       return res.status(404).send('País no encontrado');
     }
+
+    // Crear el nuevo usuario si el correo no está en uso y el país existe
     const nuevoUsuario = await Usuario.create({ nombre, apellido, correo, contraseña, cedula, pais_id });
     res.status(201).json(nuevoUsuario);
   } catch (error) {
+    console.error(error);
     res.status(500).send('Error al crear el usuario');
   }
 };

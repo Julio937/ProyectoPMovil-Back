@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const usuarioController = require('./controllers/usuarioController');
 const paisController = require('./controllers/paisController');
 const accionController = require('./controllers/accionController');
@@ -11,6 +12,8 @@ const app = express();
 
 app.use(express.json());
 
+app.use(cors());
+
 // Rutas Usuario
 app.get('/usuarios', usuarioController.obtenerUsuarios);
 app.get('/usuarios/:id', usuarioController.obtenerUsuarioPorId);
@@ -19,6 +22,8 @@ app.post('/usuarios/acciones', usuarioController.asociarAccionAUsuario);
 app.put('/usuarios/:id', usuarioController.actualizarUsuario);
 app.delete('/usuarios/:id', usuarioController.eliminarUsuario);
 app.delete('/usuarios/acciones/desasociar', usuarioController.desasociarAccionDeUsuario);
+app.get('/usuarios/:usuario_id/balance', usuarioController.obtenerBalanceUsuario);
+app.get('/usuarios/:usuario_id/earnings', usuarioController.obtenerGananciasUsuario);
 
 // Rutas País
 app.get('/paises', paisController.obtenerPaises);
@@ -60,6 +65,6 @@ app.post('/transaccion', transaccionController.crearTransaccion);
 app.put('/transaccion/:id', transaccionController.actualizarTransaccion);
 app.delete('/transaccion/:id', transaccionController.eliminarTransaccion);
 
-app.listen(3000, () => {
-  console.log('Servidor ejecutándose en http://localhost:3000');
+app.listen(5000, () => {
+  console.log('Servidor ejecutándose en http://localhost:5000');
 });
